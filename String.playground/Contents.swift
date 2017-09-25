@@ -1,22 +1,39 @@
 /*:
 # Swift String Cheat Sheet
 
-A quick guide to using Strings with Swift.
+ The Swift String API is [hard](https://www.mikeash.com/pyblog/friday-qa-2015-11-06-why-is-swifts-string-api-so-hard.html) to get used to. It has also changed over time as the Swift language and the standard library have developed. I first wrote this guide for Swift 2 and have since needed to update it for Swift 3 and now Swift 4. So for my future reference and yours if you are struggling to make sense of it all here is my Swift String Cheat Sheet.
 
- By Keith Harrison - [useyourloaf.com](https://useyourloaf.com)
+The blog post that accompanies this playground:
 
- Last Update: **23 September 2017 for Swift 4 (Xcode 9)**
++ [Swift String Cheat Sheet](https://useyourloaf.com/blog/swift-string-cheat-sheet/)
 
- See Also: [Swift String Cheat Sheet](https://useyourloaf.com/blog/swift-string-cheat-sheet/)
+## Xcode Playground
+
+You can get the latest version of the Xcode playground from my GitHub repository:
+
++ [Xcode Strings Playground](https://github.com/kharrison/Playground-Strings)
+
+## Version History
+
+ See the following posts for the main changes since I first wrote this guide for Swift 2:
+
+ + [Updating Strings For Swift 4](/blog/updating-strings-for-swift-4/)
+ + [Updating Strings For Swift 3](/blog/updating-strings-for-swift-3/)
+
+ © 2015-2017 Keith Harrison - [useyourloaf.com](https://useyourloaf.com)
 */
 
 //: ## Setup
 //: Import Foundation if you want to bridge to NSString
 import Foundation
 
-//: ## Initializing a String
-var emptyString = ""        // Empty String
-var stillEmpty = String()   // Another empty String
+/*:
+ ## Initializing A String
+
+There are an almost endless number of ways to create a String, using literals, conversions from other Swift types, Unicode, etc.
+ */
+var emptyString = ""        // Empty (Mutable) String
+let stillEmpty = String()   // Another empty String
 let helloWorld = "Hello World!" // String inferred
 
 let a = String(true)        // from boolean: "true"
@@ -27,10 +44,14 @@ let e = String(1000)        // from Int "1000"
 let f = "Result = \(d)"     // Interpolation "Result = 3.14"
 let g = "\u{2126}"          // Unicode Ohm sign Ω
 
-//: ### Creating a String by repeating values
+//: ### Creating A String With Repeating Values
 let h = String(repeating:"01", count:3) // 010101
 
-//: ### Creating a String from a file (in the Resources folder)
+/*:
+ ### Creating A String From A File
+
+ The file is in the playground Resources folder.
+ */
 if let txtPath = Bundle.main.path(forResource: "lorem", ofType: "txt") {
   do {
     let lorem = try String(contentsOfFile: txtPath, encoding: .utf8)
@@ -41,7 +62,7 @@ if let txtPath = Bundle.main.path(forResource: "lorem", ofType: "txt") {
 }
 
 /*:
- ### Multi-line string literals (Swift 4)
+ ### Multi-line String Literals (Swift 4)
   Swift now allows you to create a multi-line String literals. You wrap the strings in triple double quotes (`"""String"""`). You do not need to escape newlines and quotes within the string:
  */
 let verse = """
@@ -61,12 +82,12 @@ let indentedText = """
  Source code with overly long string literals can be hard to read. To split long lines in the source use a \ to escape the new line.
  */
 let singleLongLine = """
-    This is a much longer line split \
+    This is a single long line split \
     over two lines by escaping the newline.
     """
 
 /*:
- ## Strings are Value Types
+ ## Strings Are Value Types
  Strings are value types that are copied when assigned
  or passed to a function. The copy is performed lazily
  on mutation.
@@ -84,7 +105,7 @@ let title = String()
 title.isEmpty  // true
 
 /*:
- ### Testing for equality
+ ### Testing For Equality
 
  Swift is Unicode correct so the equality operator
  (“==”) checks for Unicode canonical equivalence.
@@ -99,17 +120,17 @@ if country == spain {
   print("Matched!")       // "Matched!\n"
 }
 
-//: ### Order
+//: ### Comparing For Order
 if "aaa" < "bbb" {
   print("aaa is less than bbb")
 }
 
-//: ### Testing for suffix/prefix
+//: ### Testing For Suffix/Prefix
 let line = "0001 Some test data here %%%%"
 line.hasPrefix("0001")    // true
 line.hasSuffix("%%%%")    // true
 
-//: ### Converting to upper/lower case
+//: ### Converting To Upper/Lower Case
 let mixedCase = "AbcDef"
 let upper = mixedCase.uppercased() // "ABCDEF"
 let lower = mixedCase.lowercased() // "abcdef"
@@ -134,7 +155,7 @@ country.utf8             // UTF-8 encoding
  are equivalent in Swift 4
  */
 
-// Swift 4
+// Swift 4 - preferred
 for character in country {
     print(character)
 }
@@ -153,15 +174,14 @@ for character in country.characters {
  */
 
 // spain = "España"
-spain.count                              // Same as spain.characters.count
-print("\(spain.characters.count)")      // 6
-print("\(spain.unicodeScalars.count)")  // 6
-print("\(spain.utf16.count)")           // 6
-print("\(spain.utf8.count)")            // 7
-
+spain.count                 // Same as spain.characters.count
+spain.characters.count      // 6
+spain.unicodeScalars.count  // 6
+spain.utf16.count           // 6
+spain.utf8.count            // 7
 
 /*:
- ## Using Index to traverse a collection
+ ## Using Index To Traverse A Collection
 
  Each of the collection views has an Index
  that you use to traverse the collection.
@@ -180,38 +200,38 @@ print("\(spain.utf8.count)")            // 7
 let hello = "hello"
 let helloStartIndex = hello.characters.startIndex // 0
 
-//: If you do not specify a view you get the characters view
-//: which most of the time saves typing
+//: In Swift 4 we can access the characters view directly which shortens this to:
 let startIndex = hello.startIndex // 0
 let endIndex = hello.endIndex     // 5
-/*:
- **Note the choice for endIndex means you cannot use it directly as a subscript as it is out of range.**
- */
 hello[startIndex] // "h"
+/*:
+ **Note the choice for `endIndex` means you cannot use it directly as a subscript as it is out of range.**
+ */
 
 /*:
- Use index(after:) and index(before:) to move forward or backward from an index
+ Use `index(after:)` and `index(before:)` to move forward or backward from an index
  */
 hello[hello.index(after: startIndex)] // "e"
 hello[hello.index(before: endIndex)]  // "o"
 
-//: Use index(_:offsetBy:) to move in arbitrary steps
+//: Use `index(_:offsetBy:)` to move in arbitrary steps. A negative offset moves backwards:
 hello[hello.index(startIndex, offsetBy: 1)]  // "e"
 hello[hello.index(endIndex, offsetBy: -4)]   // "e"
 
-//: To avoid overrunning the end of the string
+/*:
+ You can also limit the offset to avoid an error when you run off the end of the index. The function `index(_:offsetBy:limitedBy:)` returns an optional which will be `nil` if you go too far:
+ */
 if let someIndex = hello.index(startIndex, offsetBy: 4, limitedBy: endIndex) {
     hello[someIndex] // "o"
 }
 
 /*:
- To get the index of first matching element (but note that the
- return value is an optional
+ To find the index of the first matching element (but note that the return value is an optional)
  */
 let matchedIndex = hello.index(of: "l") // 2
 let nomatchIndex = hello.index(of: "A") // nil
 
-//: Using the utf16 view
+//: Using the `utf16` view
 let cafe = "café"
 let view = cafe.utf16
 let utf16StartIndex = view.startIndex
@@ -231,9 +251,9 @@ for index in cafe.indices {
 }
 
 /*:
- You cannot use an index from one String to access a
+ You cannot use an index from one string to access a
  different string. You can convert an index to an integer
- value with the distanceTo method:
+ value with the `distance(from:to:)` method:
  */
 let word1 = "ABCDEF"
 let word2 = "012345"
@@ -244,10 +264,9 @@ if let indexC = word1.index(of: "C") {
 }
 
 /*:
- ## Using a range
+ ## Using A Range
 
- To identify a range of elements in a String collection
- use a range. A range is just a start and end index:
+ To identify a range of elements in a string collection use a range. A range is just a start and end index:
  */
 let fqdn = "useyourloaf.com"
 let tldEndIndex = fqdn.endIndex
@@ -255,17 +274,20 @@ let tldStartIndex = fqdn.index(tldEndIndex, offsetBy: -3)
 let range = Range(uncheckedBounds: (lower: tldStartIndex, upper: tldEndIndex))
 fqdn[range]
 
-//: ### Alternate creation of range (... or ..< syntax)
+//: ### Creating A Range with `...` Or `..<` Operators
 let endOfDomain = fqdn.index(fqdn.endIndex, offsetBy: -4)
 let rangeOfDomain = fqdn.startIndex ..< endOfDomain
 fqdn[rangeOfDomain] // useyourloaf
 
-//: ### Returning a range of matching substring
+/*:
+ ### Returning The Range Of A Matching Substring
+
+ To return the range of a matching substring or `nil` if not found:
+ */
 if let rangeOfTLD = fqdn.range(of: "com") {
     let tld = fqdn[rangeOfTLD] // "com"
     print(tld)
 }
-
 
 /*:
  ## Substrings
@@ -280,9 +302,8 @@ if let rangeOfTLD = fqdn.range(of: "com") {
  */
 
 /*:
- In Swift 4 you slice a string into a substring using subscripting. The
- use of substring(from:), substring(to:) and substring(with:) are all
- deprecated.
+ In Swift 4 you slice a string into a substring using subscripting.
+ The use of `substring(from:)`, `substring(to:)` and `substring(with:)` are all deprecated.
 
  To get a substring from an index up to the end of the string:
  */
@@ -313,36 +334,39 @@ let substring3 = template[indexStartOfText..<indexEndOfText]                    
 // Swift 3 deprecated
 // let substring3 = template.substring(with: indexStartOfText..<indexEndOfText)
 
+//: To directly get the range:
 if let range3 = template.range(of: "Hello") {
     template[range3] // "Hello"
 }
 
 /*:
- ### Converting a Substring back to a String
+ ### Converting A Substring Back To A String
 
- Use the String() initializer to convert back to a String.
+ Use the `String()` initializer to convert back to a `String`.
  */
 let string1 = String(substring1)
 
 /*:
  ### Getting a Prefix or Suffix
 
- If you just need to drop/retrieve elements at the beginning
- or end of a String:
+ If you just need to drop/retrieve elements at the beginning or end of a `String`.
+
+ These all return a `Substring` - use the `String()` initializer if you need to convert back to a `String`.
  */
 let digits = "0123456789"
-let tail = String(digits.dropFirst()) // "123456789"
-let less = String(digits.dropFirst(3)) // "3456789"
-let head = String(digits.dropLast(3)) // "0123456"
-let prefix = String(digits.prefix(2)) // "01"
-let suffix = String(digits.suffix(2)) // "89"
+let tail = digits.dropFirst()  // "123456789"
+let less = digits.dropFirst(3) // "3456789"
+let head = digits.dropLast(3)  // "0123456"
+let prefix = digits.prefix(2)  // "01"
+let suffix = digits.suffix(2)  // "89"
 
 /*:
- Prefer to use subscripting over the verbose prefix and suffix methods.
+ With Swift 4, prefer to use subscripting over the verbose prefix and suffix methods.
  */
 
 let index4 = digits.index(digits.startIndex, offsetBy: 4)
 
+// The first of each of these examples is preferred
 digits[...index4]               // "01234"
 digits.prefix(through: index4)
 
@@ -352,19 +376,20 @@ digits.prefix(upTo: index4)
 digits[index4...]               // "456789"
 digits.suffix(from: index4)
 
-//: ### Insert a character at index
+//: ### Insert A Character At Index
 var stars = "******"
 stars.insert("X", at: stars.index(stars.startIndex, offsetBy: 3)) // "***X***"
 
-//: ### Insert a string at index (converting to characters)
-stars.insert(contentsOf: "YZ".characters, at: stars.index(stars.endIndex, offsetBy: -3)) // "***XYZ***"
-
-//: ### Replace with Range
+//: ### Replace With Range
 if let xyzRange = stars.range(of: "XYZ") {
     stars.replaceSubrange(xyzRange, with: "ABC") // "***ABC***"
 }
 
-//: ### Append
+/*:
+ ### Append
+
+ You concatenate strings with the `+` operator or the `append` method:
+ */
 var message = "Welcome"
 message += " Tim" // "Welcome Tim"
 message.append("!!!")
@@ -390,9 +415,9 @@ let midRange = lowBound ..< hiBound
 sequences.removeSubrange(midRange) // "ABA ABC"
 
 /*:
- ## Bridging to NSString (import Foundation)
+ ## Bridging To `NSString`
 
- String is bridged to Objective-C as NSString.
+ `String` is bridged to Objective-C as `NSString`.
  If the Swift Standard Library does not have what
  you need import the Foundation framework to get
  access to methods defined by NSString.
@@ -409,7 +434,7 @@ welcome.capitalized // "Hello World!
 /*:
  ### Searching for a substring
 
- An example of using NSString methods to perform a
+ An example of using `NSString` methods to perform a
  search for a substring:
  */
 let text = "123045780984"
@@ -419,3 +444,23 @@ if let rangeOfZero = text.range(of: "0", options: .backwards) {
   let suffix = text[rangeOfZero.upperBound...] // "984"
   print(suffix)
 }
+
+/*:
+ ## Further Reading
+
++ [Swift Standard Library Reference - String](https://developer.apple.com/reference/swift/string)
+
+Swift Evolution Changes in Swift 4
+
++ [SE-0183 Substring performance affordances](https://github.com/apple/swift-evolution/blob/master/proposals/0183-substring-affordances.md)
++ [SE-0182 String Newline Escaping](https://github.com/apple/swift-evolution/blob/master/proposals/0182-newline-escape-in-strings.md)
++ [SE-0180 String Index Overhaul](https://github.com/apple/swift-evolution/blob/master/proposals/0180-string-index-overhaul.md)
++ [SE-0178 Add unicodeScalars property to Character](https://github.com/apple/swift-evolution/blob/master/proposals/0178-character-unicode-view.md)
++ [SE-0168 Multi-line String Literals](https://github.com/apple/swift-evolution/blob/master/proposals/0168-multi-line-string-literals.md)
++ [SE-0163 String Revision: Collection Conformance, C Interop, Transcoding](https://github.com/apple/swift-evolution/blob/master/proposals/0163-string-revision-1.md)
+
+Swift Evolution Changes in Swift 3
+
++ [SE-0006 Apply API Guidelines to the Standard Library](https://github.com/apple/swift-evolution/blob/master/proposals/0006-apply-api-guidelines-to-the-standard-library.md)
++ [SE-0065 A New Model for Collections and Indices](https://github.com/apple/swift-evolution/blob/master/proposals/0065-collections-move-indices.md)
+ */
