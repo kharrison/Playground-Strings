@@ -17,10 +17,11 @@ You can get the latest version of the Xcode playground from my GitHub repository
 
  See the following posts for the main changes since I first wrote this guide for Swift 2:
 
- + [Updating Strings For Swift 4](/blog/updating-strings-for-swift-4/)
- + [Updating Strings For Swift 3](/blog/updating-strings-for-swift-3/)
+ + [Updating Strings for Swift 4.2](https://useyourloaf.com/blog/updating-strings-for-swift-4.2/)
+ + [Updating Strings For Swift 4](https://useyourloaf.com/blog/updating-strings-for-swift-4/)
+ + [Updating Strings For Swift 3](https://useyourloaf.com/blog/updating-strings-for-swift-3/)
 
- © 2015-2017 Keith Harrison - [useyourloaf.com](https://useyourloaf.com)
+ © 2015-2018 Keith Harrison - [useyourloaf.com](https://useyourloaf.com)
 */
 
 //: ## Setup
@@ -44,6 +45,9 @@ let e = String(1000)        // from Int "1000"
 let f = "Result = \(d)"     // Interpolation "Result = 3.14"
 let g = "\u{2126}"          // Unicode Ohm sign Ω
 
+// New in Swift 4.2
+let hex = String(254, radix: 16, uppercase: true) // "FE"
+let octal = String(18, radix: 8) // "22"
 //: ### Creating A String With Repeating Values
 let h = String(repeating:"01", count:3) // 010101
 
@@ -142,7 +146,6 @@ let lower = mixedCase.lowercased() // "abcdef"
  characters. You can access different representations
  of the string through the appropriate collection view.
  */
-country.characters       // characters
 country.unicodeScalars   // Unicode scalar 21-bit codes
 country.utf16            // UTF-16 encoding
 country.utf8             // UTF-8 encoding
@@ -150,19 +153,48 @@ country.utf8             // UTF-8 encoding
 /*:
  ### Strings Are Collections Of Characters (Swift 4)
 
- The `CharacterView` is now the default when you are
- working with a `String`. The following two loops
- are equivalent in Swift 4
+ A `String` is now a collection of characters by default so iterating over a `String` or `Substring` gives you each character in the `String`:
  */
 
-// Swift 4 - preferred
+// Swift 4
 for character in country {
     print(character)
 }
 
-// Swift 3 (still works in Swift 4)
-for character in country.characters {
-    print(character)
+/*:
+Using `characters` to get the character view is unnecessary and deprecated with Swift 4.2:
+*/
+
+// Swift 3
+// This still works in Swift 4 but is
+// deprecated in Swift 4.2
+//for character in country.characters {
+//    print(character)
+//}
+
+/*:
+ To get the first or last character in a `String`. The
+ result is an optional returning nil if the `String` is
+ empty.
+ */
+country.first
+country.last
+
+/*:
+ ### Random Element and Shuffle
+
+ Swift 4.2 allows you to get a random element from
+ any collection. When used on a `String` you get a
+ random character or `nil` if the `String` is empty:
+ */
+let suits = "♠︎♣︎♥︎♦︎"
+suits.randomElement()
+
+/*:
+ Iterate over shuffled `String`
+ */
+for suit in suits.shuffled() {
+    print(suit)
 }
 
 /*:
@@ -174,8 +206,7 @@ for character in country.characters {
  */
 
 // spain = "España"
-spain.count                 // Same as spain.characters.count
-spain.characters.count      // 6
+spain.count                  // 6
 spain.unicodeScalars.count  // 6
 spain.utf16.count           // 6
 spain.utf8.count            // 7
@@ -197,13 +228,16 @@ spain.utf8.count            // 7
                non-empty, else identical to endIndex.
  +  `endIndex`: the position just “past the end” of the string.
  */
-let hello = "hello"
-let helloStartIndex = hello.characters.startIndex // 0
 
-//: In Swift 4 we can access the characters view directly which shortens this to:
+/*:
+ When used directly with a `String` or `Substring` you
+ get an index into the character view:
+ */
+let hello = "hello"
 let startIndex = hello.startIndex // 0
 let endIndex = hello.endIndex     // 5
 hello[startIndex] // "h"
+
 /*:
  **Note the choice for `endIndex` means you cannot use it directly as a subscript as it is out of range.**
  */
@@ -224,12 +258,6 @@ hello[hello.index(endIndex, offsetBy: -4)]   // "e"
 if let someIndex = hello.index(startIndex, offsetBy: 4, limitedBy: endIndex) {
     hello[someIndex] // "o"
 }
-
-/*:
- To find the index of the first matching element (but note that the return value is an optional)
- */
-let matchedIndex = hello.index(of: "l") // 2
-let nomatchIndex = hello.index(of: "A") // nil
 
 //: Using the `utf16` view
 let cafe = "café"
@@ -261,6 +289,56 @@ if let indexC = word1.index(of: "C") {
   let distance = word1.distance(from: word1.startIndex, to: indexC) // 2
   let digit = word2[word2.index(startIndex, offsetBy: distance)]    // "2"
     print(digit)
+}
+
+/*:
+ ## Finding Characters
+
+ The `Sequence` and `Collection` methods for finding the first and last element and index of an element that matched a predicate all work with `String`.
+*/
+
+/*:
+ ### Contains
+ Testing if a `String` contains another `String`
+ */
+let alphabet = "abcdefghijklmnopqrstuvwxyz"
+alphabet.contains("jkl")
+
+/*:
+ ### Find First Or Last Match
+
+ To find the index of the first matching element (but note that the return value is an optional):
+*/
+let k = alphabet.first { $0 > "j" }
+
+if let matchedIndex = alphabet.firstIndex(of: "x") {
+    alphabet[matchedIndex]  // "x"
+}
+let nomatchIndex = alphabet.firstIndex(of: "A") // nil
+
+if let nextIndex = alphabet.firstIndex(where: { $0 > "j" }) {
+    alphabet[nextIndex]  // "k"
+}
+
+/*:
+ In Swift 4.2 the following methods still exist and have not yet been deprecated. It seems likely they will be deprecated by Swift 5 so you should migrate to the above methods:
+
+ + alphabet.index(of: "x")
+ + alphabet.index(where: { $0 > "j" })
+ */
+
+/*:
+ Swift 4.2 also adds equivalent methods to find the
+ last element.
+ */
+let lastMatch = alphabet.last { $0 > "j" } // "z"
+
+if let lastX = alphabet.lastIndex(of: "x") {
+    alphabet[lastX] // "x"
+}
+
+if let lastIndex = alphabet.lastIndex(where: { $0 > "j" }) {
+  alphabet[lastIndex] // "z"
 }
 
 /*:
@@ -449,6 +527,11 @@ if let rangeOfZero = text.range(of: "0", options: .backwards) {
  ## Further Reading
 
 + [Swift Standard Library Reference - String](https://developer.apple.com/reference/swift/string)
+
+Swift evolution changes in Swift 4.2 that impact `String`:
+
++ [SE-0204 Add last(where:) and lastIndex(where:) Methods](https://github.com/apple/swift-evolution/blob/master/proposals/0204-add-last-methods.md)
++ [SE-0202 Random Unification](https://github.com/apple/swift-evolution/blob/master/proposals/0202-random-unification.md)
 
 Swift Evolution Changes in Swift 4
 
