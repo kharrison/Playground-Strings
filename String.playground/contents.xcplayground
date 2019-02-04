@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<playground version='5.0' target-platform='ios' display-mode='raw'>
-    <timeline fileName='timeline.xctimeline'/>
+<playground version='6.0' target-platform='macos' display-mode='raw' executeOnSourceChanges='false'>
+    <pages>
+        <page name='Introduction'/>
+        <page name='Initializing'/>
+        <page name='Value Types'/>
+        <page name='Character Collections'/>
+        <page name='Character Properties'/>
+        <page name='Substrings'/>
+        <page name='Using Index To Traverse'/>
+        <page name='Finding Matches'/>
+        <page name='Ranges'/>
+        <page name='Bridging'/>
+        <page name='Further Reading'/>
+    </pages>
 </playground>
