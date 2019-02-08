@@ -17,6 +17,7 @@ You can get the latest version of the Xcode playground from my GitHub repository
 
  See the following posts for the main changes since I first wrote this guide for Swift 2:
 
+ + [Creating Strings From Raw Text in Swift 5](https://useyourloaf.com/blog/creating-strings-from-raw-text-in-swift-5/)
  + [Character Properties In Swift 5](https://useyourloaf.com/blog/character-properties-in-swift-5/)
 
  + [Updating Strings for Swift 4.2](https://useyourloaf.com/blog/updating-strings-for-swift-4.2/)

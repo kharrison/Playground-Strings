@@ -62,6 +62,71 @@ This is a single long line split \
 over two lines by escaping the newline.
 """
 /*:
+ ### Raw Text (Swift 5)
+ When creating strings from raw text you can customise
+ the delimiter and escape characters. Using the default delimiter (double-quote)
+ and escape sequence (backslash) to create a String you might write:
+ */
+let title = "Insert \"title\" here"
+// Insert "title" here
+/*:
+ Swift 5 allows you to pad the delimiter and escape
+ sequence with one or more `#`. We can write the
+ previous example as follows:
+ */
+let title2 = #"Insert "title" here"#
+let title3 = ##"Insert "title" here"##
+let title4 = ###"Insert "title" here"###
+// Insert "title" here
+/*:
+ Note that we don’t need to escape the double-quotes now as they are no longer a delimiter. If our raw text contains our chosen delimiter we can pad with an extra “`#`“:
+ */
+// raw text is "#Hello#"
+// start delimiter is ##"
+// end delimiter is "##
+let regex1 = ##""#Hello#""##       // "#Hello#"
+/*:
+ If we pad the delimiters with one or more `#`’s we also need to pad the backslash escape sequence. For example, when interpolating a value:
+ */
+let name = "Tom"
+let greeting1 = "Hello \(name)"    // Hello Tom
+/*:
+ When padding with a single `#` the escape sequence becomes `\#`:
+ */
+let greeting2 = #"Hello \#(name)"# // Hello Tom
+/*:
+Custom delimiters become useful when we want to preserve escaped raw text. For example, when creating a String from some JSON. Using a multi-line String literal seems like a good approach::
+ */
+let json1 = """
+{
+  "colors": ["red","green","blue"],
+  "label": "Insert \"title\" here"
+}
+"""
+/*:
+The multi-line string literal is convenient when the text contains quotes but it introduces an error in this case. The problem is that the backslash escaping around "title" is stripped resulting in some invalid JSON:
+ */
+// {
+//   "colors": ["red","green","blue"],
+//   "label": "Insert "title" here"
+// }
+/*:
+We can combine a custom delimiter with multi-line string literals to preserve the escape sequence in the raw text::
+ */
+let json2 = #"""
+{
+  "colors": ["red","green","blue"],
+  "label": "Insert \"title\" here"
+}
+"""#
+/*:
+ The resulting String with the preserved raw text (note the backslash escaped double-quotes aroung *title*:
+ */
+// {
+//   "colors": ["red","green","blue"],
+//   "label": "Insert \"title\" here"
+// }
+/*:
  * * *
  [Previous page](@previous) -
  [Next page](@next)
